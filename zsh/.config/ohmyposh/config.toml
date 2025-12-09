@@ -1,0 +1,26 @@
+version = 3
+final_space = true
+
+[[blocks]]
+  type = 'prompt'
+  newline = true
+  alignment = 'left'
+
+  [[blocks.segments]]
+    template = '{{ if hasPrefix .Path "~" }}{{ replace .Path "~" (env "HOME") }}{{ else }}{{ .Path }}{{ end }} '
+    foreground = 'blue'
+    type = 'path'
+    style = 'plain'
+
+    [blocks.segments.properties]
+      style = 'folder'
+
+  [[blocks.segments]]
+    template = '$'
+    foreground = 'white'
+    type = 'status'
+    style = 'plain'
+    foreground_templates = ['{{ if gt .Code 0 }}red{{ end }}']
+
+    [blocks.segments.properties]
+      always_enabled = true
