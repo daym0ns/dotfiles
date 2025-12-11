@@ -1,5 +1,5 @@
 [general]
-import = ["vague.toml"]
+import = ["custom.toml"]
 
 [env]
 TERM = "xterm-256color"
@@ -11,17 +11,21 @@ program = "/home/user/.config/alacritty/shell.sh"
 size = 18.0
 
 [font.bold]
-family = "JetBrainsMono Nerd Font Mono"
+# family = "JetBrainsMono Nerd Font Mono"
+family = "Iosevka Term Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "JetBrainsMono Nerd Font Mono"
+# family = "JetBrainsMono Nerd Font Mono"
+family = "Iosevka Term Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "JetBrainsMono Nerd Font Mono"
+# family = "JetBrainsMono Nerd Font Mono"
+family = "Iosevka Term Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "JetBrainsMono Nerd Font Mono"
+# family = "JetBrainsMono Nerd Font Mono"
+family = "Iosevka Term Nerd Font Mono"
 style = "SemiBold"

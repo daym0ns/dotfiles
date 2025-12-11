@@ -7,7 +7,7 @@ final_space = true
   alignment = 'left'
 
   [[blocks.segments]]
-    template = '{{ if hasPrefix .Path "~" }}{{ replace .Path "~" (env "HOME") }}{{ else }}{{ .Path }}{{ end }} '
+    template = '{{ if hasPrefix .Path "~" }}{{ replace .Path "~" (env "HOME") }}{{ else }}{{ .Path }}{{ end }}'
     foreground = 'blue'
     type = 'path'
     style = 'plain'
@@ -16,11 +16,34 @@ final_space = true
       style = 'folder'
 
   [[blocks.segments]]
-    template = '$'
-    foreground = 'white'
+    type = 'git'
+    style = 'plain'
+    foreground = '#454545'
+    background = 'transparent'
+    template = ' git:{{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} {{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}'
+
+    [blocks.segments.properties]
+      branch_icon = ''
+      commit_icon = '@'
+      fetch_status = true
+
+[[blocks]]
+  type = 'prompt'
+  newline = true
+  alignment = 'left'
+
+  [[blocks.segments]]
+    template = 'λ'
+    foreground = '#7f7480'
     type = 'status'
     style = 'plain'
     foreground_templates = ['{{ if gt .Code 0 }}red{{ end }}']
 
     [blocks.segments.properties]
       always_enabled = true
+
+
+[transient_prompt]
+background = "transparent"
+foreground = "#7f7480"
+template = "λ "

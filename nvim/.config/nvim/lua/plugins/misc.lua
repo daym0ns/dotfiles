@@ -2,6 +2,10 @@ return {
 	{
 		"ojroques/vim-oscyank",
 	},
+  {
+    "psliwka/termcolors.nvim",
+    opts = {},
+  },
 	{
 		"mbbill/undotree",
 		config = function()

@@ -1,0 +1,11 @@
+separator=true
+separator_block_width=15
+
+[ethernet]
+command=~/.config/i3blocks/network.sh
+interval=10
+
+[time]
+command=date '+%Y-%m-%d %H:%M:%S'
+interval=1
+color=#DDC7A1
