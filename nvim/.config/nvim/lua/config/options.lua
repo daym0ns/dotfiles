@@ -1,5 +1,5 @@
 -- Visual Optimizations
-vim.o.winborder = "rounded"
+vim.o.winborder = "single"
 vim.o.termguicolors = true
 vim.o.showmatch = true
 vim.o.wrap = false
@@ -30,3 +30,5 @@ vim.o.tabstop = 2
 vim.o.softtabstop = 2
 vim.o.shiftwidth = 2
 vim.o.backspace = "indent,eol,start"
+
+vim.cmd[[colorscheme custom]]

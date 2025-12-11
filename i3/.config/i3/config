@@ -118,7 +118,7 @@ client.unfocused #222222 #222222 #9b8d7f #222222 #222222
 
 bar {
   status_command i3blocks
-  position bottom
+  position top
   separator_symbol "|"
   colors {
     background #222222

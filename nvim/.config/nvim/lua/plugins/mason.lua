@@ -1,10 +1,7 @@
 return {
 	{
 		"mason-org/mason.nvim",
-		config = function()
-			require("mason").setup()
-			vim.keymap.set("n", "<leader>m", ":Mason<CR>")
-		end,
+    opts = {}
 	},
 	{
 		"mason-org/mason-lspconfig.nvim",
