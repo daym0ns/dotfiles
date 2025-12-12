@@ -131,5 +131,5 @@ bar {
     urgent_workspace #222222 #222222 #9b8d7f
     binding_mode #222222 #222222 #9b8d7f
   }
-  tray_output full
+  tray_output primary
 }

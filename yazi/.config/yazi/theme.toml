@@ -1,0 +1,22 @@
+"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
+
+[mgr]
+cwd = { fg = "cyan" }
+hovered = { bg = "blue", fg = "black" }
+
+[status]
+overall   = {}
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#1d2021", bg = "#a89984", bold = true }
+normal_alt  = { fg = "#ddc7a1", bg = "#5b534d" }
+
+# Select mode
+select_main = { bg = "#ea6962", fg = "#1d2021", bold = true }
+select_alt  = { fg = "#ddc7a1", bg = "#504945" }
+
+# Unset mode
+unset_main = { bg = "#ea6962", fg = "#1d2021", bold = true }
+unset_alt  = { fg = "#ddc7a1", bg = "#504945" }

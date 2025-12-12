@@ -52,6 +52,13 @@ alias vim='nvim'
 alias ivm='nvim'
 alias vmi='nvim'
 alias vi='nvim'
+alias v='nvim'
+
+alias ta='tmux attach'
+alias tkss='tmux kill-session -t'
+alias tl='tmux list-sessions'
+alias y='yazi'
+
 alias nc='nvim ~/nixos-dotfiles'
 alias nrs='sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos'
 
@@ -62,3 +69,4 @@ export PATH=$PATH:~/.local/bin
 # Shell Integrations
 eval "$(oh-my-posh init zsh --config '~/.config/ohmyposh/config.toml')"
 eval "$(fzf --zsh)"
+clear

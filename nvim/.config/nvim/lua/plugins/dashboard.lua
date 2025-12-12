@@ -496,7 +496,7 @@ return {
 
     dashboard.section.buttons.val = {
       dashboard.button("e", "λ  > New file", ":ene <BAR> startinsert <CR>"),
-      dashboard.button("b", "λ  > Browse files", ":Yazi<CR>"),
+      dashboard.button("b", "λ  > Browse files", ":Tfm<CR>"),
       dashboard.button("f", "λ  > Find file", ":Pick files<CR>"),
     }
 
