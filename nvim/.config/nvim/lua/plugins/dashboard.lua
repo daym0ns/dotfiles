@@ -10,7 +10,7 @@ return {
 
     dashboard.section.header.opts.hl = {
       {
-        { "I2A0", 0,   3 },
+        { "I2A0", 0, 3 },
         { "I2A0", 3,   6 },
         { "I2A0", 6,   9 },
         { "I2A0", 9,   12 },

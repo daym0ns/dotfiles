@@ -8,6 +8,7 @@ return {
 				section_separators = { left = "", right = "" },
 				component_separators = { left = "", right = "" },
 				icons_enabled = false,
+        globalstatus = true,
 				theme = "gruvbox-material",
 			},
 		})

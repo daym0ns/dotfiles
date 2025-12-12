@@ -8,6 +8,10 @@ return {
       require("tfm").setup({
         file_manager = "yazi",
         replace_netrw = true,
+        ui = {
+          border = "none",
+        }
       })
+      vim.api.nvim_create_user_command('Tfm', function() require('tfm').open() end, {})
     end
 }
