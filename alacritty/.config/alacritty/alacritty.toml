@@ -5,7 +5,7 @@ import = ["custom.toml"]
 TERM = "xterm-256color"
 
 [terminal.shell]
-program = "/home/user/.config/alacritty/shell.sh"
+program = "/usr/bin/zsh"
 
 [font]
 size = 18.0
