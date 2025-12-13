@@ -1,8 +1,8 @@
 # Set the ModKey
 set $mod Mod4
 
-font pango:Iosevka Nerd Font 12
 for_window [class="^.*"] border pixel 2
+font pango:Iosevka Nerd Font 12
 gaps inner 13
 gaps outer 1
 
@@ -137,3 +137,7 @@ bar {
   }
   tray_output primary
 }
+
+for_window [class="pavucontrol"] floating enable
+for_window [class="Arandr"] floating enable
+for_window [class="arandr"] floating enable
