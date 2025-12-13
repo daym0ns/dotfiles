@@ -54,9 +54,11 @@ alias vmi='nvim'
 alias vi='nvim'
 alias v='nvim'
 
+alias t='tmux'
 alias ta='tmux attach'
 alias tkss='tmux kill-session -t'
 alias tl='tmux list-sessions'
+
 alias y='yazi'
 
 alias nc='nvim ~/nixos-dotfiles'
