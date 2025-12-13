@@ -43,6 +43,7 @@ bindsym $mod+r exec --no-startup-id rofi -show combi
 
 # start the browser
 bindsym $mod+b exec chromium
+bindsym $mod+Shift+b exec brave
 
 # change focus
 bindsym $mod+h focus left
