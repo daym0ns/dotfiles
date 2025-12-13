@@ -25,6 +25,9 @@ exec_always --no-startup-id ~/.config/i3/wallpaper.sh
 # set refresh rate
 exec_always --no-startup-id ~/.config/i3/monitor.sh
 
+# set screen temp
+exec_always --no-startup-id "redshift -P -O 5500"
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
