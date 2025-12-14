@@ -13,13 +13,8 @@ return {
 			require("mason-lspconfig").setup({
 				automatic_enable = true,
 				ensure_installed = {
-          "rust_analyzer",
 					"lua_ls",
-          "bashls",
 					"stylua",
-					"gopls",
-          "taplo",
-					"zls",
 				},
 			})
 		end,
