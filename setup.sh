@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+set -e
+
+needed=(
+	git
+	gcc
+	zsh
+	oh-my-posh
+)
+
+recommended=(
+	rg
+	fd
+	fzf
+	curl
+	tmux
+	nvim
+	zoxide
+)
+
+ensure() {
+	local missing=()
+
+	for cmd in "$@"; do
+		if ! command -v "$cmd" >/dev/null 2>&1; then
+			missing+=("$cmd")
+		fi
+	done
+
+	if (( ${#missing[@]} )); then
+		echo "Error: missing required programs:"
+		for cmd in "${missing[@]}"; do
+			echo "  - $cmd"
+		done
+		exit 1
+	fi
+}
+
+warn() {
+	local missing=()
+
+	for cmd in "$@"; do
+		if ! command -v "$cmd" >/dev/null 2>&1; then
+			missing+=("$cmd")
+		fi
+	done
+
+	if (( ${#missing[@]} )); then
+		echo "Warn: missing recommended programs:"
+		for cmd in "${missing[@]}"; do
+			echo "  - $cmd"
+		done
+		echo ""
+		read -r -p "You are missing programs that make the workflow incomplete. You will miss out on many things and experience some errors. Would you like to continue? (y/N): " answer
+		if [[ "$answer" == "y" || "$answer" == "Y" || "$answer" == "yes" || "$answer" == "YES" ]]; then
+			echo "Continuing installation"
+		else
+			exit 1
+		fi
+	fi
+}
+
+ensure "${needed[@]}"
+warn "${recommended[@]}"
+
+# Stow the dotfiles
+stow .
+echo "Dotfiles stowed"
+
+# Setup zsh to source ~/.config/zsh
+if [ -f ~/.zshrc ]; then
+  rm -r ~/.zshrc
+fi
+
+echo "source ~/.config/zsh/zshrc" > ~/.zshenv
+echo "Zsh config set up done"
+
+# Setup tpm
+if [ -d ~/.tmux ]; then
+  rm -rf ~/.tmux
+fi
+
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+bash ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+echo "TPM setup done"
+
+echo "Installation finished. Remember to install JetBrainsMono Nerd Font!"

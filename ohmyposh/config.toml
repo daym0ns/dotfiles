@@ -1,0 +1,74 @@
+version = 4
+final_space = true
+
+[transient_prompt]
+background = "transparent"
+foreground = "blue"
+template = "➜ "
+
+[[blocks]]
+type = "prompt"
+alignment = "left"
+newline = true
+
+
+  [[blocks.segments]]
+  type = "text"
+  template = "╭─ "
+  foreground = "#6B7280"
+
+  [[blocks.segments]]
+  type = "text"
+  template = "<b>{{ .UserName }}</b>"
+  foreground = "green"
+
+  [[blocks.segments]]
+  type = "text"
+  template = " in "
+  foreground = "p:grey"
+
+  [[blocks.segments]]
+  type = "path"
+  template = "<b>{{ .Path }}</b>"
+  foreground = "blue"
+
+    [blocks.segments.options]
+    style = "folder"
+
+  [[blocks.segments]]
+  type = "text"
+  template = " @ "
+  foreground = "p:grey"
+
+  [[blocks.segments]]
+  type = "text"
+  template = "{{ .HostName }}"
+  foreground = "cyan"
+
+  [[blocks.segments]]
+    type = 'git'
+    style = 'plain'
+    foreground = '#454545'
+    background = 'transparent'
+    template = '<b> ⌥ </b>git:{{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} {{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}'
+
+    [blocks.segments.properties]
+      branch_icon = ''
+      commit_icon = '@'
+      fetch_status = true
+
+[[blocks]]
+type = "prompt"
+alignment = "left"
+newline = true
+
+  [[blocks.segments]]
+  type = "text"
+  template = "╰─ "
+  foreground = "#6B7280"
+
+  [[blocks.segments]]
+  type = "text"
+  template = "➜"
+  foreground = "blue"
+

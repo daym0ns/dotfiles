@@ -1,0 +1,89 @@
+# Remove login message
+if [ ! -f ~/.hushlogin ]; then
+  touch ~/.hushlogin
+fi
+
+# Environment variables
+export EDITOR='nvim'
+
+# Set zinit directory
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Install zinit
+if [ ! -d $ZINIT_HOME ]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Make zinit clone with 1 depth
+zinit ice depth=1
+
+# Install zsh syntax highlighting
+zinit light zsh-users/zsh-syntax-highlighting
+
+# Install zsh autosuggestions
+zinit light zsh-users/zsh-autosuggestions
+
+# Install fzf-tab
+zinit light Aloxaf/fzf-tab
+
+# Install and setup zsh completions
+zinit light zsh-users/zsh-completions
+autoload -Uz compinit && compinit
+zinit cdreplay -q
+
+# Keybinds
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+
+# History tweaks
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+# Call ls when changing directory (except home)
+chpwd() {
+  if [[ "$(pwd)" != "${HOME}" ]]; then
+    ls
+  fi
+}
+
+# Aliases
+alias cd='z'
+alias ls='ls --color'
+
+alias ivm='nvim'
+alias vim='nvim'
+alias vi='nvim'
+alias v='nvim'
+
+# Setup homebrew shellenv
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Setup fzf integration
+eval "$(fzf --zsh)"
+
+# Setup zoxide integration
+eval "$(zoxide init zsh)"
+
+# Setup ohmyposh prompt
+eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/config.toml)"
