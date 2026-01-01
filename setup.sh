@@ -12,6 +12,7 @@ recommended=(
 	rg
 	fd
 	fzf
+	eza
 	curl
 	tmux
 	nvim
@@ -51,7 +52,7 @@ warn() {
 			echo "  - $cmd"
 		done
 		echo ""
-		read -r -p "You are missing programs that make the workflow incomplete. You will miss out on many things and experience some errors. Would you like to continue? (y/N): " answer
+		read -r -p "You are missing programs that make the workflow incomplete. You will miss out on many things and experience some errors. You will probaby need to tweak some of the configurations to get them to a working state. Would you like to continue? (y/N): " answer
 		if [[ "$answer" == "y" || "$answer" == "Y" || "$answer" == "yes" || "$answer" == "YES" ]]; then
 			echo "Continuing installation"
 		else
