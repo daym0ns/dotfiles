@@ -5,6 +5,7 @@ needed=(
 	git
 	gcc
 	zsh
+	stow
 	oh-my-posh
 )
 
