@@ -6,6 +6,11 @@ background = "transparent"
 foreground = "blue"
 template = "➜ "
 
+[secondary_prompt]
+background = "transparent"
+foreground = "blue"
+template = "-➜ "
+
 [[blocks]]
 type = "prompt"
 alignment = "left"
@@ -71,4 +76,5 @@ newline = true
   type = "text"
   template = "➜"
   foreground = "blue"
+
 
