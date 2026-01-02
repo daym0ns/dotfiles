@@ -7,5 +7,9 @@ background-opacity = 0.8
 background-blur-radius = 20
 window-decoration = true
 
+cursor-style = bar
+cursor-style-blink = true
+shell-integration-features = no-cursor
+
 mouse-hide-while-typing = false
 macos-option-as-alt = true
