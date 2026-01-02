@@ -63,7 +63,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # Call ls when changing directory (except home)
 chpwd() {
   if [[ "$(pwd)" != "${HOME}" ]]; then
-    ls
+    eza
   fi
 }
 
