@@ -1,15 +1,15 @@
 theme = "Catppuccin Mocha"
 
 font-size = 26
-font-family = "JetBrainsMono Nerd Font Mono"
+font-family = "JetBrainsMono Nerd Font"
 
-background-opacity = 0.8
-background-blur-radius = 20
+#background-opacity = 0.8
+#background-blur-radius = 20
 window-decoration = true
 
 cursor-style = bar
 cursor-style-blink = true
-shell-integration-features = no-cursor
+shell-integration-features = no-ssh-env
 
 mouse-hide-while-typing = false
 macos-option-as-alt = true

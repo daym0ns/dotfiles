@@ -87,3 +87,6 @@ eval "$(zoxide init zsh)"
 
 # Setup ohmyposh prompt
 eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/config.toml)"
+
+# Clear the terminal
+clear
