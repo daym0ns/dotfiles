@@ -1,5 +1,15 @@
 return {
   'neovim/nvim-lspconfig',
+  dependencies = {
+    {
+      "folke/lazydev.nvim", ft = "lua",
+      opts = {
+        library = {
+          { path = "${3rd}/luv/library", words = { "vim%.uv" } }
+        }
+      }
+    }
+  },
   config = function()
     vim.keymap.set('n', 'K', vim.lsp.buf.hover)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition)

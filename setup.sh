@@ -13,11 +13,13 @@ recommended=(
 	rg
 	fd
 	fzf
+  npm
 	eza
 	curl
 	tmux
 	nvim
 	zoxide
+  lazygit
 )
 
 ensure() {
@@ -86,4 +88,4 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 bash ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 echo "TPM setup done"
 
-echo "Installation finished. Remember to install JetBrainsMono Nerd Font!"
+echo "Installation finished. Remember to 'brew install font-jetbrains-mono-nerd-font'!"
