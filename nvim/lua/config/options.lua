@@ -1,4 +1,5 @@
 -- Visual Optimizations
+vim.g.have_nerd_font = true
 vim.o.winborder = "rounded"
 vim.o.termguicolors = true
 vim.o.showmatch = true

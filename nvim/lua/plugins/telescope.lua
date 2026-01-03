@@ -47,11 +47,11 @@ return {
     })
     require("telescope").load_extension("fzf")
     require("telescope").load_extension("ui-select")
-    vim.keymap.set('n', '<space><space>', ':Telescope find_files<CR>')
-    vim.keymap.set('n', '<space>fe', ':Telescope file_browser<CR>')
-    vim.keymap.set('n', '<space>ff', ':Telescope find_files<CR>')
-    vim.keymap.set('n', '<space>fg', ':Telescope live_grep<CR>')
-    vim.keymap.set('n', '<space>fh', ':Telescope help_tags<CR>')
-    vim.keymap.set('n', '<space>fb', ':Telescope buffers<CR>')
+    vim.keymap.set('n', '<space><space>', ':Telescope find_files<CR>', { desc = 'Telescope: Find files' })
+    vim.keymap.set('n', '<space>fe', ':Telescope file_browser<CR>', { desc = 'Telescope: Browse files' })
+    vim.keymap.set('n', '<space>ff', ':Telescope find_files<CR>', { desc = 'Telescope: Find files' })
+    vim.keymap.set('n', '<space>fg', ':Telescope live_grep<CR>', { desc = 'Telescope: Live grep' })
+    vim.keymap.set('n', '<space>fh', ':Telescope help_tags<CR>', { desc = 'Telescope: Help tags' })
+    vim.keymap.set('n', '<space>fb', ':Telescope buffers<CR>', { desc = 'Telescope: List buffers' })
   end
 }
