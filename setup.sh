@@ -18,6 +18,7 @@ recommended=(
 	curl
 	tmux
 	nvim
+  emacs
 	zoxide
   lazygit
 )

@@ -1,2 +1,6 @@
 tmux/plugins/*
 nvim/lazy-lock.json
+emacs/*
+!emacs/config.org
+!emacs/init.el
+!emacs/early-init.el

@@ -1,0 +1,271 @@
+#+TITLE: My GNU Emacs config
+#+AUTHOR: daym0ns
+#+DESCRIPTION: Emacs config
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* Table of Contents
+- [[*1. The Basics][1. The Basics]]
+- [[*2. Advanced plugins and configuration][2. Advanced plugins and configuration]]
+- [[*3. Keybindings][3. Keybindings]]
+
+* 1. The Basics
+
+** Sane defaults
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  ;; Disable useless UI elements
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+
+  ;; Dired fix
+  (setq dired-use-ls-dired nil)
+
+  ;; Tab settings for emacs mode - NOT evil mode
+  (setq-default tab-width 2)
+  (setq-default indent-tabs-mode nil)
+  (global-set-key (kbd "TAB") #'self-insert-command)
+
+  ;; Y/n instead of Yes/No
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; No splash screen
+  (setq inhibit-startup-screen t)
+
+  ;; Backups in own directory + no autosave
+  (setq backup-directory-alist `(("." . ,(expand-file-name "cache/backups/" user-emacs-directory)))
+  	    auto-save-default nil)
+
+  ;; Scroll margins
+  (setq scroll-conservatively 101
+        scroll-margin 12)
+
+  ;; Make esc quit cmdline
+  (defun my/minibuffer-escape ()
+  (interactive)
+  (if (minibufferp)
+      (abort-recursive-edit)
+    (keyboard-quit)))
+
+  (global-set-key (kbd "<escape>") 'my/minibuffer-escape)
+
+#+END_SRC
+
+** Straight.el Package manager
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (setq straight-use-package-by-default t)
+  (straight-use-package 'use-package)
+#+END_SRC
+
+** A theme and some fonts
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Font
+  (set-face-attribute 'default nil
+    		              :family "CaskaydiaCove Nerd Font"
+    		              :height 260)
+
+  ;; Themes - catppuccin and the doom collection
+  (use-package catppuccin-theme)
+  (use-package doom-themes
+    :ensure t
+    :custom
+    (doom-themes-enable-bold t)
+    (doom-themes-enable-italic t)
+    (doom-themes-treemacs-theme "doom-atom")
+    :config
+    ;; Enable custom neotree theme (nerd-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+
+  (load-theme 'doom-one t)
+
+#+END_SRC
+
+** Evil Mode (vim motions) and related options
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package general)
+
+  ;; Persistent undo
+  (use-package undo-fu)
+  (use-package undo-fu-session
+    :init
+    (setq undo-fu-session-directory (expand-file-name "cache/undo/" user-emacs-directory))
+    :config
+    (undo-fu-session-global-mode))
+
+
+  (use-package evil
+    :init
+    (setq evil-want-integration t
+          evil-want-keybinding nil
+          evil-want-C-u-scroll t
+          evil-shift-width 2
+          evil-undo-system 'undo-fu)
+    :config
+    (evil-mode 1))
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+
+  (use-package evil-surround
+    :after evil
+    :config
+    (global-evil-surround-mode 1))
+
+  (use-package evil-commentary
+    :config
+    (evil-commentary-mode t))
+
+  (use-package doom-modeline
+    :after evil
+    :ensure t
+    :init (doom-modeline-mode 1))
+
+  ;; Line numbers and line highlight
+  (global-display-line-numbers-mode t)
+  (global-hl-line-mode t)
+#+END_SRC
+
+* 2. Advanced plugins and configuration
+
+** Basic completions for minibuffer - NOT lsp completions
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package vertico
+    :init
+    (vertico-mode 1)
+    (setq vertico-cycle t))
+
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides
+          '((file (styles basic partial-completion)))))
+
+  (use-package marginalia
+    :init
+    (marginalia-mode 1))
+
+  (use-package savehist
+    :init
+    (savehist-mode 1))
+
+  (setq completion-ignore-case t
+        read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t
+        enable-recursive-minibuffers t)
+
+  (minibuffer-depth-indicate-mode 1)
+
+#+END_SRC
+
+** Telescope-like search
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package projectile
+    :init
+    (projectile-mode +1)
+    (setq projectile-project-search-path '("~/Projects/" "~/.config")))
+
+  (use-package rg
+    :commands (rg rg-project))
+
+  (use-package fzf
+    :commands (fzf fzf-git fzf-projectile))
+
+  (use-package consult
+    :after vertico
+    :init
+    (setq consult-preview-key 'any))
+#+END_SRC
+
+* 3. Keybindings
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  ;; Enable which-key
+  (which-key-mode t)
+  (setq which-key-idle-delay 0.1)
+
+  ;; Set the leader key
+  (general-create-definer my/leader
+    :states '(normal visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+  ;; Set custom commands
+  (defun my/rg-any-dir ()
+    "Run rg in the chosen directory."
+    (interactive)
+    (let ((dir (read-directory-name "rg: ")))
+      (consult-ripgrep dir)))
+
+  (defun my/rg-cwd ()
+    "Run rg in the current working directory."
+    (interactive)
+    (let ((default-directory (or (projectile-project-root) default-directory)))
+      (consult-ripgrep default-directory)))
+
+  (defun my/explore-config ()
+    "Explore the users private config files with dired."
+    (interactive)
+    (dired user-emacs-directory))
+
+  (defun my/tab-spaces ()
+    "Insert x spaces when TAB is pressed."
+    (interactive)
+    (insert "  "))
+
+
+  ;; Set keymaps with leader key
+  (my/leader
+    "E" '(dired-jump :wk "Open Dired"))
+
+  (my/leader
+    "b" '(:ignore t :wk "Buffers")
+    "bd" '(kill-this-buffer :wk "Delete buffer")
+    "bn" '(next-buffer :wk "Next buffer")
+    "bp" '(previous-buffer :wk "Next buffer"))
+
+  (my/leader
+    "e" '(:ignore t :wk "Evaluate")
+    "eb" '(eval-buffer :wk "Evaluate buffer")
+    "ed" '(eval-defun :wk "Evaluate defun")
+    "er" '(eval-region :wk "Evaluate region")
+    "ee" '(eval-expression :wk "Evaluate expression")
+    "el" '(eval-last-sexp :wk "Evaluate last expression"))
+
+  (my/leader   
+    "f" '(:ignore t :wk "Find")
+    "ff" '(consult-find :wk "Find files")
+    "fb" '(consult-buffer :wk "Find buffers")
+    "fG" '(my/rg-any-dir :wk "Grep in directory")
+    "fg" '(my/rg-cwd :wk "Live grep")
+    "fP" '(my/explore-config :wk "Explore config")
+    "fp" '(projectile-switch-project :wk "Find Projects"))
+
+  ;; Other keymaps
+  (define-key evil-insert-state-map (kbd "TAB") #'my/tab-spaces)
+  (define-key vertico-map (kbd "C-j") 'vertico-next)
+  (define-key vertico-map (kbd "C-k") 'vertico-previous)
+#+END_SRC
