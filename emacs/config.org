@@ -4,14 +4,33 @@
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
-* Table of Contents
-- [[*1. The Basics][1. The Basics]]
-- [[*2. Advanced plugins and configuration][2. Advanced plugins and configuration]]
-- [[*3. Keybindings][3. Keybindings]]
+* TABLE OF CONTENTS :toc:
+- [[#1-the-basics][1. The Basics]]
+  - [[#sane-defaults][Sane defaults]]
+  - [[#straightel-package-manager][Straight.el Package manager]]
+  - [[#evil-mode-vim-motions-and-related-options][Evil Mode (vim motions) and related options]]
+  - [[#basic-completions-for-minibuffer---not-lsp-completions][Basic completions for minibuffer - NOT lsp completions]]
+- [[#2-gui-tweaks][2. GUI Tweaks]]
+  - [[#fonts][Fonts]]
+  - [[#themes][Themes]]
+  - [[#icons][Icons]]
+  - [[#modeline][Modeline]]
+- [[#3-advanced-configuration][3. Advanced configuration]]
+  - [[#telescope-like-search][Telescope-like search]]
+- [[#4-org-mode][4. Org mode]]
+  - [[#basic-settings][Basic settings]]
+  - [[#automatic-toc-generation][Automatic ToC generation]]
+  - [[#nicer-symbols][Nicer symbols]]
+  - [[#font-ligatures][Font Ligatures]]
+- [[#5-keybindings][5. Keybindings]]
+  - [[#custom-commands][Custom commands]]
+  - [[#leader-key-keymaps][Leader key keymaps]]
+  - [[#other-keymaps][Other keymaps]]
 
 * 1. The Basics
 
 ** Sane defaults
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   ;; Disable useless UI elements
@@ -53,6 +72,7 @@
 #+END_SRC
 
 ** Straight.el Package manager
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -70,37 +90,12 @@
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
   (setq straight-use-package-by-default t)
+  (straight-use-package 'org)
   (straight-use-package 'use-package)
 #+END_SRC
 
-** A theme and some fonts
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Font
-  (set-face-attribute 'default nil
-    		              :family "CaskaydiaCove Nerd Font"
-    		              :height 260)
-
-  ;; Themes - catppuccin and the doom collection
-  (use-package catppuccin-theme)
-  (use-package doom-themes
-    :ensure t
-    :custom
-    (doom-themes-enable-bold t)
-    (doom-themes-enable-italic t)
-    (doom-themes-treemacs-theme "doom-atom")
-    :config
-    ;; Enable custom neotree theme (nerd-icons must be installed!)
-    (doom-themes-neotree-config)
-    ;; or for treemacs users
-    (doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
-
-  (load-theme 'doom-one t)
-
-#+END_SRC
-
 ** Evil Mode (vim motions) and related options
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package general)
 
@@ -137,19 +132,13 @@
     :config
     (evil-commentary-mode t))
 
-  (use-package doom-modeline
-    :after evil
-    :ensure t
-    :init (doom-modeline-mode 1))
-
   ;; Line numbers and line highlight
   (global-display-line-numbers-mode t)
   (global-hl-line-mode t)
 #+END_SRC
 
-* 2. Advanced plugins and configuration
-
 ** Basic completions for minibuffer - NOT lsp completions
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package vertico
     :init
@@ -180,7 +169,73 @@
 
 #+END_SRC
 
+
+
+* 2. GUI Tweaks
+
+** Fonts
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Font
+  (set-face-attribute 'default nil
+    		              :family "CaskaydiaCove Nerd Font"
+    		              :height 260)
+
+#+END_SRC
+
+** Themes
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  (use-package catppuccin-theme)
+  (use-package doom-themes
+    :ensure t
+    :custom
+    (doom-themes-enable-bold t)
+    (doom-themes-enable-italic t)
+    (doom-themes-treemacs-theme "doom-atom")
+    :config
+    ;; Enable custom neotree theme (nerd-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+
+  (load-theme 'doom-one t)
+
+#+END_SRC
+
+** Icons
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package nerd-icons)
+
+  (use-package nerd-icons-dired
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
+
+  (use-package nerd-icons-completion
+    :config
+    (nerd-icons-completion-mode))
+
+  (use-package nerd-icons-ibuffer
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+END_SRC
+
+** Modeline
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  (use-package doom-modeline
+    :after evil
+    :ensure t
+    :init (doom-modeline-mode 1))
+
+#+END_SRC
+
+
+
+* 3. Advanced configuration
+
 ** Telescope-like search
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package projectile
     :init
@@ -199,12 +254,137 @@
     (setq consult-preview-key 'any))
 #+END_SRC
 
-* 3. Keybindings
+
+
+* 4. Org mode
+
+** Basic settings
 #+BEGIN_SRC emacs-lisp :tangle yes
 
-  ;; Enable which-key
-  (which-key-mode t)
-  (setq which-key-idle-delay 0.1)
+  ;; Make TODO list percentage work
+  (setq org-checkbox-hierarchical-statistics t)
+
+  ;; Set heading sizes
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :height (cdr face)))
+
+
+
+#+END_SRC
+
+** Automatic ToC generation
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  (use-package toc-org
+    :hook (org-mode . toc-org-mode))
+
+#+END_SRC
+
+** Nicer symbols
+   #+BEGIN_SRC emacs-lisp :tangle yes
+
+     ;; stolen from sophiebos.io :)
+     (use-package org-superstar
+       :config
+       (setq org-superstar-leading-bullet " ")
+       (setq org-superstar-headline-bullets-list '("◉" "○" "⚬" "◈" "◇"))
+       :hook (org-mode . org-superstar-mode))
+
+     (defun my/prettify-symbols-setup ()
+       (push '("#+BEGIN_SRC" . ?≫) prettify-symbols-alist)
+       (push '("#+END_SRC" . ?≫) prettify-symbols-alist)
+       (push '("#+begin_src" . ?≫) prettify-symbols-alist)
+       (push '("#+end_src" . ?≫) prettify-symbols-alist)
+
+       ;; Tags
+       (push '(":projects:" . "") prettify-symbols-alist)
+       (push '(":work:"     . "") prettify-symbols-alist)
+       (push '(":inbox:"    . "") prettify-symbols-alist)
+       (push '(":task:"     . "") prettify-symbols-alist)
+       (push '(":thesis:"   . "") prettify-symbols-alist)
+       (push '(":uio:"      . "") prettify-symbols-alist)
+       (push '(":emacs:"    . "") prettify-symbols-alist)
+       (push '(":learn:"    . "") prettify-symbols-alist)
+       (push '(":code:"     . "") prettify-symbols-alist)
+       (push '(":toc:"      . "󰠶") prettify-symbols-alist)
+
+       (prettify-symbols-mode))
+
+     (add-hook 'org-mode-hook        #'my/prettify-symbols-setup)
+     (add-hook 'org-agenda-mode-hook #'my/prettify-symbols-setup)
+
+   #+END_SRC
+
+** Font Ligatures
+  #+BEGIN_SRC emacs-lisp :tangle yes
+
+    (use-package ligature
+      :config
+      (ligature-set-ligatures 'org-mode
+       '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+         "..." "+++" "/==" "///" "_|_" "&&" "^=" "~~" "~@" "~="
+         "\\\\" "://"))
+      :hook (org-mode . ligature-mode))
+
+  #+END_SRC
+
+
+* 5. Keybindings
+
+** Custom commands
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+;; Enable which-key
+(which-key-mode t)
+(setq which-key-idle-delay 0.1)
+
+;; Set custom commands
+(defun my/rg-any-dir ()
+  "Run rg in the chosen directory."
+  (interactive)
+  (let ((dir (read-directory-name "rg: ")))
+    (consult-ripgrep dir)))
+
+(defun my/rg-cwd ()
+  "Run rg in the current working directory."
+  (interactive)
+  (let ((default-directory (or (projectile-project-root) default-directory)))
+    (consult-ripgrep default-directory)))
+
+(defun my/explore-config ()
+  "Explore the users private config files with dired."
+  (interactive)
+  (dired user-emacs-directory))
+
+(defun my/tab-spaces ()
+  "Insert x spaces when TAB is pressed."
+  (interactive)
+  (insert "  ")) ;; Change the number of spaces here
+
+#+END_SRC
+
+
+** Leader key keymaps
+
+#+BEGIN_SRC emacs-lisp :tangle yes
 
   ;; Set the leader key
   (general-create-definer my/leader
@@ -212,30 +392,6 @@
     :keymaps 'override
     :prefix "SPC"
     :global-prefix "C-SPC")
-
-  ;; Set custom commands
-  (defun my/rg-any-dir ()
-    "Run rg in the chosen directory."
-    (interactive)
-    (let ((dir (read-directory-name "rg: ")))
-      (consult-ripgrep dir)))
-
-  (defun my/rg-cwd ()
-    "Run rg in the current working directory."
-    (interactive)
-    (let ((default-directory (or (projectile-project-root) default-directory)))
-      (consult-ripgrep default-directory)))
-
-  (defun my/explore-config ()
-    "Explore the users private config files with dired."
-    (interactive)
-    (dired user-emacs-directory))
-
-  (defun my/tab-spaces ()
-    "Insert x spaces when TAB is pressed."
-    (interactive)
-    (insert "  "))
-
 
   ;; Set keymaps with leader key
   (my/leader
@@ -264,8 +420,18 @@
     "fP" '(my/explore-config :wk "Explore config")
     "fp" '(projectile-switch-project :wk "Find Projects"))
 
+  (my/leader
+    "hrr" '((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :wk "Reload emacs init file"))
+
+#+END_SRC
+
+** Other keymaps
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+
   ;; Other keymaps
   (define-key evil-insert-state-map (kbd "TAB") #'my/tab-spaces)
   (define-key vertico-map (kbd "C-j") 'vertico-next)
   (define-key vertico-map (kbd "C-k") 'vertico-previous)
+
 #+END_SRC
