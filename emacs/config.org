@@ -13,10 +13,14 @@
 - [[#2-gui-tweaks][2. GUI Tweaks]]
   - [[#fonts][Fonts]]
   - [[#themes][Themes]]
+  - [[#rainbow-mode][Rainbow mode]]
   - [[#icons][Icons]]
   - [[#modeline][Modeline]]
 - [[#3-advanced-configuration][3. Advanced configuration]]
   - [[#telescope-like-search][Telescope-like search]]
+  - [[#terminal-emulators][Terminal emulators]]
+  - [[#lsp][LSP]]
+  - [[#completion][Completion]]
 - [[#4-org-mode][4. Org mode]]
   - [[#basic-settings][Basic settings]]
   - [[#automatic-toc-generation][Automatic ToC generation]]
@@ -30,7 +34,6 @@
 * 1. The Basics
 
 ** Sane defaults
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   ;; Disable useless UI elements
@@ -38,10 +41,10 @@
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
 
-  ;; Dired fix
+  ;; Dired doesnt use ls
   (setq dired-use-ls-dired nil)
 
-  ;; Tab settings for emacs mode - NOT evil mode
+  ;; Tab settings
   (setq-default tab-width 2)
   (setq-default indent-tabs-mode nil)
   (global-set-key (kbd "TAB") #'self-insert-command)
@@ -52,7 +55,7 @@
   ;; No splash screen
   (setq inhibit-startup-screen t)
 
-  ;; Backups in own directory + no autosave
+  ;; Backup settings
   (setq backup-directory-alist `(("." . ,(expand-file-name "cache/backups/" user-emacs-directory)))
   	    auto-save-default nil)
 
@@ -72,7 +75,6 @@
 #+END_SRC
 
 ** Straight.el Package manager
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -95,7 +97,6 @@
 #+END_SRC
 
 ** Evil Mode (vim motions) and related options
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package general)
 
@@ -138,7 +139,6 @@
 #+END_SRC
 
 ** Basic completions for minibuffer - NOT lsp completions
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package vertico
     :init
@@ -204,6 +204,13 @@
 
 #+END_SRC
 
+** Rainbow mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package rainbow-mode
+  :hook 
+  ((org-mode prog-mode) . rainbow-mode))
+#+END_SRC
+
 ** Icons
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package nerd-icons)
@@ -235,25 +242,94 @@
 * 3. Advanced configuration
 
 ** Telescope-like search
-
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package projectile
-    :init
-    (projectile-mode +1)
-    (setq projectile-project-search-path '("~/Projects/" "~/.config")))
+    (use-package projectile
+      :init
+      (projectile-mode +1)
+      (setq projectile-project-search-path '("~/Projects/" "~/dotfiles")))
 
-  (use-package rg
-    :commands (rg rg-project))
+    (use-package rg
+      :commands (rg rg-project))
 
-  (use-package fzf
-    :commands (fzf fzf-git fzf-projectile))
-
-  (use-package consult
-    :after vertico
-    :init
-    (setq consult-preview-key 'any))
+    (use-package consult
+      :after vertico
+      :init
+      (setq consult-preview-key 'any)
+      (recentf-mode))
 #+END_SRC
 
+** Terminal emulators
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package vterm
+    :config
+    (setq shell-file-name "/usr/bin/env zsh"
+          vterm-max-scrollback 5000))
+
+  (use-package vterm-toggle
+    :after vterm
+    :config
+    (setq vterm-toggle-fullscreen-p nil)
+    (add-to-list 'display-buffer-alist
+                 '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                   (display-buffer-reuse-window display-buffer-same-window))))
+
+
+#+END_SRC
+
+** LSP
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+    (use-package mason
+      :ensure t
+      :config
+      (mason-setup))
+
+    (use-package lsp-mode
+      :ensure t
+      :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-keymap-prefix "C-c l") ; optional but recommended
+      :hook
+      (go-mode . lsp)
+      :config
+      (setq lsp-enable-snippet t
+            lsp-prefer-capf t))
+
+    (use-package lsp-ui
+      :ensure t
+      :after lsp-mode
+      :hook (lsp-mode . lsp-ui-mode)
+      :config
+      (setq lsp-ui-doc-position 'bottom
+            lsp-ui-doc-delay 0.3))
+
+    (use-package lua-mode
+      :ensure t
+      :config
+      (setq lsp-lua-language-server-command "lua-language-server")
+      :hook (lua-mode . lsp))
+
+    (use-package consult-lsp
+      :ensure t
+      :after (consult lsp-mode))
+
+#+END_SRC
+
+** Completion
+#+BEGIN_SRC emacs-lisp :tangle yes
+
+  (use-package corfu
+    :ensure t
+    :init
+    (global-corfu-mode)
+    :config
+    (setq corfu-auto t
+          corfu-cycle t))
+#+END_SRC
 
 
 * 4. Org mode
@@ -349,41 +425,43 @@
 * 5. Keybindings
 
 ** Custom commands
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 
-;; Enable which-key
-(which-key-mode t)
-(setq which-key-idle-delay 0.1)
+  ;; Enable which-key
+  (which-key-mode t)
+  (setq which-key-idle-delay 0.1)
 
-;; Set custom commands
-(defun my/rg-any-dir ()
-  "Run rg in the chosen directory."
-  (interactive)
-  (let ((dir (read-directory-name "rg: ")))
-    (consult-ripgrep dir)))
+  (defun my/rg-any-dir ()
+    "Run rg in the chosen directory."
+    (interactive)
+    (let ((dir (read-directory-name "rg: ")))
+      (consult-ripgrep dir)))
 
-(defun my/rg-cwd ()
-  "Run rg in the current working directory."
-  (interactive)
-  (let ((default-directory (or (projectile-project-root) default-directory)))
-    (consult-ripgrep default-directory)))
+  (defun my/rg-cwd ()
+    "Run rg in the current working directory."
+    (interactive)
+    (let ((default-directory (or (projectile-project-root) default-directory)))
+      (consult-ripgrep default-directory)))
 
-(defun my/explore-config ()
-  "Explore the users private config files with dired."
-  (interactive)
-  (dired user-emacs-directory))
+  (defun my/explore-config ()
+    "Explore the users private config files with dired."
+    (interactive)
+    (dired user-emacs-directory))
 
-(defun my/tab-spaces ()
-  "Insert x spaces when TAB is pressed."
-  (interactive)
-  (insert "  ")) ;; Change the number of spaces here
+  (defun my/tab-spaces ()
+    "Insert x spaces when TAB is pressed."
+    (interactive)
+    (insert "  ")) ;; Change the number of spaces here
+
+  (defun reload-init-file ()
+    (interactive)
+    (load-file user-init-file)
+    (load-file user-init-file))
 
 #+END_SRC
 
 
 ** Leader key keymaps
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   ;; Set the leader key
@@ -395,13 +473,32 @@
 
   ;; Set keymaps with leader key
   (my/leader
-    "E" '(dired-jump :wk "Open Dired"))
+    "." '(dired-jump :wk "Open Dired"))
+
+  (my/leader
+    "ca" '(lsp-execute-code-action :wk "Code Actions")
+    "rn" '(lsp-rename :wk "LSP Rename")
+  )
+
+  (my/leader
+    "w" '(:ignore t :wk "Windows")
+    "wc" '(evil-window-delete :wk "Close window")
+    "wn" '(evil-window-new :wk "New window")
+    "ws" '(evil-window-split :wk "New window split")
+    "wv" '(evil-window-vsplit :wk "New window vsplit")
+    "wh" '(evil-window-left :wk "Move focus left")
+    "wj" '(evil-window-down :wk "Move focus down")
+    "wk" '(evil-window-up :wk "Move focus up")
+    "wl" '(evil-window-right :wk "Move focus right")
+    "ww" '(evil-window-next :wk "Move focus next")
+    )
 
   (my/leader
     "b" '(:ignore t :wk "Buffers")
-    "bd" '(kill-this-buffer :wk "Delete buffer")
+    "bd" '(kill-buffer :wk "Delete buffer")
     "bn" '(next-buffer :wk "Next buffer")
-    "bp" '(previous-buffer :wk "Next buffer"))
+    "bp" '(previous-buffer :wk "Next buffer")
+    )
 
   (my/leader
     "e" '(:ignore t :wk "Evaluate")
@@ -409,29 +506,46 @@
     "ed" '(eval-defun :wk "Evaluate defun")
     "er" '(eval-region :wk "Evaluate region")
     "ee" '(eval-expression :wk "Evaluate expression")
-    "el" '(eval-last-sexp :wk "Evaluate last expression"))
+    "el" '(eval-last-sexp :wk "Evaluate last expression")
+    )
 
   (my/leader   
     "f" '(:ignore t :wk "Find")
-    "ff" '(consult-find :wk "Find files")
+    "fr" '(consult-recent-file :wk "Find recent files")
+    "ff" '(find-file :wk "Find files")
     "fb" '(consult-buffer :wk "Find buffers")
     "fG" '(my/rg-any-dir :wk "Grep in directory")
     "fg" '(my/rg-cwd :wk "Live grep")
     "fP" '(my/explore-config :wk "Explore config")
-    "fp" '(projectile-switch-project :wk "Find Projects"))
+    "fp" '(projectile-switch-project :wk "Find Projects")
+    )
+
+  (my/leader   
+    "t" '(:ignore t :wk "Toggle")
+    "tt" '(vterm-toggle :wk "Toggle terminal")
+    )
+
 
   (my/leader
-    "hrr" '((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :wk "Reload emacs init file"))
+    "hrr" '(reload-init-file :wk "Reload emacs init file"))
 
 #+END_SRC
 
 ** Other keymaps
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   ;; Other keymaps
   (define-key evil-insert-state-map (kbd "TAB") #'my/tab-spaces)
   (define-key vertico-map (kbd "C-j") 'vertico-next)
   (define-key vertico-map (kbd "C-k") 'vertico-previous)
+
+  (with-eval-after-load 'lsp-mode
+    (evil-define-key 'normal lsp-mode-map
+      "gd" #'lsp-find-definition
+      "gr" #'lsp-find-references
+      "K"  #'lsp-hover
+      "gi" #'lsp-find-implementation))
+
+
 
 #+END_SRC

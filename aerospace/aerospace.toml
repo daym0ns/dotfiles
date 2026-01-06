@@ -1,6 +1,7 @@
 config-version = 2
 
 start-at-login = true
+after-startup-command = ["exec-and-forget emacs --daemon &"]
 
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
@@ -59,5 +60,6 @@ persistent-workspaces = ["1", "2", "3", "4", "5"]
     alt-shift-4 = 'move-node-to-workspace 4'
     alt-shift-5 = 'move-node-to-workspace 5'
 
+    alt-shift-e = 'exec-and-forget emacsclient -c'
     alt-shift-r = 'reload-config'
     alt-shift-space = 'layout floating tiling'
